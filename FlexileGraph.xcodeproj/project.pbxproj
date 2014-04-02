@@ -8,14 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		93F8DECE18E4A48800FD5F5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F8DECD18E4A48800FD5F5E /* Foundation.framework */; };
-		93F8DED318E4A48800FD5F5E /* FlexileGraph.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 93F8DED218E4A48800FD5F5E /* FlexileGraph.h */; };
-		93F8DED518E4A48800FD5F5E /* FlexileGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 93F8DED418E4A48800FD5F5E /* FlexileGraph.m */; };
+		93F8DED318E4A48800FD5F5E /* FlxGraph.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 93F8DED218E4A48800FD5F5E /* FlxGraph.h */; };
+		93F8DED518E4A48800FD5F5E /* FlxGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 93F8DED418E4A48800FD5F5E /* FlxGraph.m */; };
 		93F8DEDC18E4A48800FD5F5E /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F8DEDB18E4A48800FD5F5E /* XCTest.framework */; };
 		93F8DEDD18E4A48800FD5F5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F8DECD18E4A48800FD5F5E /* Foundation.framework */; };
 		93F8DEDF18E4A48800FD5F5E /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F8DEDE18E4A48800FD5F5E /* UIKit.framework */; };
 		93F8DEE218E4A48800FD5F5E /* libFlexileGraph.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F8DECA18E4A48800FD5F5E /* libFlexileGraph.a */; };
 		93F8DEE818E4A48800FD5F5E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 93F8DEE618E4A48800FD5F5E /* InfoPlist.strings */; };
 		93F8DEEA18E4A48800FD5F5E /* FlexileGraphTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 93F8DEE918E4A48800FD5F5E /* FlexileGraphTests.m */; };
+		93F8DEF518E4C64600FD5F5E /* FlxLineGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 93F8DEF418E4C64600FD5F5E /* FlxLineGraph.m */; };
+		93F8DEF818E4C6A500FD5F5E /* FlxGraphSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = 93F8DEF718E4C6A500FD5F5E /* FlxGraphSpace.m */; };
+		93F8DEFB18E4C6C200FD5F5E /* FlxAxis.m in Sources */ = {isa = PBXBuildFile; fileRef = 93F8DEFA18E4C6C200FD5F5E /* FlxAxis.m */; };
+		93F8DEFE18E5C20300FD5F5E /* FlxGraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 93F8DEFD18E5C20300FD5F5E /* FlxGraphView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,7 +39,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				93F8DED318E4A48800FD5F5E /* FlexileGraph.h in CopyFiles */,
+				93F8DED318E4A48800FD5F5E /* FlxGraph.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,14 +49,22 @@
 		93F8DECA18E4A48800FD5F5E /* libFlexileGraph.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFlexileGraph.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		93F8DECD18E4A48800FD5F5E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		93F8DED118E4A48800FD5F5E /* FlexileGraph-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FlexileGraph-Prefix.pch"; sourceTree = "<group>"; };
-		93F8DED218E4A48800FD5F5E /* FlexileGraph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlexileGraph.h; sourceTree = "<group>"; };
-		93F8DED418E4A48800FD5F5E /* FlexileGraph.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlexileGraph.m; sourceTree = "<group>"; };
+		93F8DED218E4A48800FD5F5E /* FlxGraph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FlxGraph.h; sourceTree = "<group>"; };
+		93F8DED418E4A48800FD5F5E /* FlxGraph.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlxGraph.m; sourceTree = "<group>"; };
 		93F8DEDA18E4A48800FD5F5E /* FlexileGraphTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlexileGraphTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		93F8DEDB18E4A48800FD5F5E /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		93F8DEDE18E4A48800FD5F5E /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		93F8DEE518E4A48800FD5F5E /* FlexileGraphTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FlexileGraphTests-Info.plist"; sourceTree = "<group>"; };
 		93F8DEE718E4A48800FD5F5E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		93F8DEE918E4A48800FD5F5E /* FlexileGraphTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FlexileGraphTests.m; sourceTree = "<group>"; };
+		93F8DEF318E4C64600FD5F5E /* FlxLineGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlxLineGraph.h; sourceTree = "<group>"; };
+		93F8DEF418E4C64600FD5F5E /* FlxLineGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlxLineGraph.m; sourceTree = "<group>"; };
+		93F8DEF618E4C6A500FD5F5E /* FlxGraphSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlxGraphSpace.h; sourceTree = "<group>"; };
+		93F8DEF718E4C6A500FD5F5E /* FlxGraphSpace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlxGraphSpace.m; sourceTree = "<group>"; };
+		93F8DEF918E4C6C200FD5F5E /* FlxAxis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlxAxis.h; sourceTree = "<group>"; };
+		93F8DEFA18E4C6C200FD5F5E /* FlxAxis.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlxAxis.m; sourceTree = "<group>"; };
+		93F8DEFC18E5C20300FD5F5E /* FlxGraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlxGraphView.h; sourceTree = "<group>"; };
+		93F8DEFD18E5C20300FD5F5E /* FlxGraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlxGraphView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,8 +122,16 @@
 		93F8DECF18E4A48800FD5F5E /* FlexileGraph */ = {
 			isa = PBXGroup;
 			children = (
-				93F8DED218E4A48800FD5F5E /* FlexileGraph.h */,
-				93F8DED418E4A48800FD5F5E /* FlexileGraph.m */,
+				93F8DEF318E4C64600FD5F5E /* FlxLineGraph.h */,
+				93F8DEF418E4C64600FD5F5E /* FlxLineGraph.m */,
+				93F8DEF618E4C6A500FD5F5E /* FlxGraphSpace.h */,
+				93F8DEF718E4C6A500FD5F5E /* FlxGraphSpace.m */,
+				93F8DEF918E4C6C200FD5F5E /* FlxAxis.h */,
+				93F8DEFA18E4C6C200FD5F5E /* FlxAxis.m */,
+				93F8DEFC18E5C20300FD5F5E /* FlxGraphView.h */,
+				93F8DEFD18E5C20300FD5F5E /* FlxGraphView.m */,
+				93F8DED218E4A48800FD5F5E /* FlxGraph.h */,
+				93F8DED418E4A48800FD5F5E /* FlxGraph.m */,
 				93F8DED018E4A48800FD5F5E /* Supporting Files */,
 			);
 			path = FlexileGraph;
@@ -224,7 +244,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				93F8DED518E4A48800FD5F5E /* FlexileGraph.m in Sources */,
+				93F8DEFE18E5C20300FD5F5E /* FlxGraphView.m in Sources */,
+				93F8DEF518E4C64600FD5F5E /* FlxLineGraph.m in Sources */,
+				93F8DED518E4A48800FD5F5E /* FlxGraph.m in Sources */,
+				93F8DEF818E4C6A500FD5F5E /* FlxGraphSpace.m in Sources */,
+				93F8DEFB18E4C6C200FD5F5E /* FlxAxis.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,7 +313,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -320,7 +344,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -405,6 +429,7 @@
 				93F8DEEF18E4A48900FD5F5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		93F8DEF018E4A48900FD5F5E /* Build configuration list for PBXNativeTarget "FlexileGraphTests" */ = {
 			isa = XCConfigurationList;
@@ -413,6 +438,7 @@
 				93F8DEF218E4A48900FD5F5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
