@@ -11,8 +11,10 @@
 @interface FlxGraphRange : NSObject
 @property double rangeMax;
 @property double rangeMin;
+@property (readonly) double rangeSpan;
 @property double upperBounds;
 @property double lowerBounds;
+@property (readonly) double boundSpan;
 @end
 
 @interface FlxGraphSpace : NSObject

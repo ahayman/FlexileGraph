@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		937F656718F1994800A6C5F1 /* FlxAxisTickGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 937F656618F1994800A6C5F1 /* FlxAxisTickGenerator.m */; };
 		93F8DECE18E4A48800FD5F5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F8DECD18E4A48800FD5F5E /* Foundation.framework */; };
 		93F8DED318E4A48800FD5F5E /* FlxGraph.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 93F8DED218E4A48800FD5F5E /* FlxGraph.h */; };
 		93F8DED518E4A48800FD5F5E /* FlxGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 93F8DED418E4A48800FD5F5E /* FlxGraph.m */; };
@@ -46,6 +47,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		937F656518F1994800A6C5F1 /* FlxAxisTickGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlxAxisTickGenerator.h; sourceTree = "<group>"; };
+		937F656618F1994800A6C5F1 /* FlxAxisTickGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlxAxisTickGenerator.m; sourceTree = "<group>"; };
 		93F8DECA18E4A48800FD5F5E /* libFlexileGraph.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFlexileGraph.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		93F8DECD18E4A48800FD5F5E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		93F8DED118E4A48800FD5F5E /* FlexileGraph-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FlexileGraph-Prefix.pch"; sourceTree = "<group>"; };
@@ -128,6 +131,8 @@
 				93F8DEF718E4C6A500FD5F5E /* FlxGraphSpace.m */,
 				93F8DEF918E4C6C200FD5F5E /* FlxAxis.h */,
 				93F8DEFA18E4C6C200FD5F5E /* FlxAxis.m */,
+				937F656518F1994800A6C5F1 /* FlxAxisTickGenerator.h */,
+				937F656618F1994800A6C5F1 /* FlxAxisTickGenerator.m */,
 				93F8DEFC18E5C20300FD5F5E /* FlxGraphView.h */,
 				93F8DEFD18E5C20300FD5F5E /* FlxGraphView.m */,
 				93F8DED218E4A48800FD5F5E /* FlxGraph.h */,
@@ -248,6 +253,7 @@
 				93F8DEF518E4C64600FD5F5E /* FlxLineGraph.m in Sources */,
 				93F8DED518E4A48800FD5F5E /* FlxGraph.m in Sources */,
 				93F8DEF818E4C6A500FD5F5E /* FlxGraphSpace.m in Sources */,
+				937F656718F1994800A6C5F1 /* FlxAxisTickGenerator.m in Sources */,
 				93F8DEFB18E4C6C200FD5F5E /* FlxAxis.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

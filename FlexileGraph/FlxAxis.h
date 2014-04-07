@@ -19,31 +19,35 @@ typedef NS_ENUM(NSUInteger, FlxAxisSpace) {
 
 typedef NS_ENUM(NSUInteger, FlxAxisAnchor) {
     FlxAxisAnchorSpace,
-    FlxAxisAnchorAbsolute,
     FlxAxisAnchorSide
 };
 
 @protocol FlxAxisTickDelegate <NSObject>
-- (BOOL) axis:(FlxAxis *)axis needsUpdateInRange:(FlxGraphRange *)range;
-- (double *) majorTicksInRange:(FlxGraphRange *)range tickCount:(NSUInteger *)tickCount;
-- (double *) minorTicksInRange:(FlxGraphRange *)range tickCount:(NSUInteger *)tickCount;
+- (BOOL) axis:(FlxAxis *)axis needsMajorUpdateInRange:(FlxGraphRange *)range;
+- (BOOL) axis:(FlxAxis *)axis needsMinorUpdateInRange:(FlxGraphRange *)range;
+- (double *) majorTicksInRange:(FlxGraphRange *)range tickCount:(NSUInteger *)tickCount forAxis:(FlxAxis *)axis;
+- (double *) minorTicksInRange:(FlxGraphRange *)range tickCount:(NSUInteger *)tickCount forAxis:(FlxAxis *)axis;
 @end
 
 @interface FlxAxis : CAShapeLayer
+@property (strong) NSString *axisID;
 @property FlxAxisSpace axisSpace;
 @property (readonly) FlxGraphRange *axisRange;
 @property (strong) FlxGraphSpace *graphSpace;
+@property CGFloat axisWidth;
+@property (strong) UIColor *lineColor;
+@property BOOL isDateAxis; ///Used only if the axis is calculating it's own ticks
 
 //Anchoring
-@property FlxAxisAnchor anchorType;
-@property double graphSpaceAnchor;
-@property UIRectEdge sideAnchor;
-@property CGFloat absoluteAnchor;
+@property FlxAxisAnchor anchorType; ///anchor to either a side or the graph space
+@property double graphSpaceAnchor; ///anchors the axis to a spcific location in the graph space
+@property UIRectEdge sideAnchor; ///anchors the axis to a side
+@property CGFloat anchorOffset; ///offset for the axis if side anchored
 
 //Tick Generation
 @property (weak) id <FlxAxisTickDelegate> tickDelegate;
-@property CGFloat majorTickSize;
-@property CGFloat minorTickSize;
+@property CGSize majorTickSize; ///Major Tick size. If 0 no ticks will be presented. Default: 4
+@property CGSize minorTickSize; ///Minor Tick Size: If 0 no ticks will be presented. Default: 2
 
 - (void) setAxisNeedsLayout;
 - (void) layoutAxis;

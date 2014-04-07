@@ -73,6 +73,12 @@
     [axis removeFromSuperlayer];
     [_axes removeObject:axis];
 }
+- (void) removeAllAxes{
+    for (FlxAxis *axis in _axes){
+        [axis removeFromSuperlayer];
+    }
+    [_axes removeAllObjects];
+}
 #pragma mark - Protocol
 #pragma mark - Overridden
 - (void) layoutSubviews{

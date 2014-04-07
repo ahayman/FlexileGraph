@@ -41,6 +41,12 @@
 - (double) rangeMin{
     return _rangeMin;
 }
+- (double) rangeSpan{
+    return _rangeMax - _rangeMin;
+}
+- (double) boundSpan{
+    return _upperBounds - _lowerBounds;
+}
 @end
 
 @implementation FlxGraphSpace
