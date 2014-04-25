@@ -15,6 +15,12 @@
 }
 #pragma mark - Class
 #pragma mark - Init
+- (id) init{
+    if (self = [super init]){
+        self.actions = @{@"onOrderOut" : [NSNull null], @"sublayers" : [NSNull null], @"contents" : [NSNull null], @"bounds" : [NSNull null], @"position" : [NSNull null]};
+    }
+    return self;
+}
 #pragma mark - Lazy
 #pragma mark - Private
 - (void) performDataUpdate{
@@ -68,6 +74,11 @@
 }
 - (void) layoutGraph{
     _graphNeedsLayout = NO;
+//    [CATransaction begin];
+//    [CATransaction setValue:(id)kCFBooleanTrue
+//                     forKey:kCATransactionDisableActions];
+    self.path = self.graphPath;
+//    [CATransaction commit];
 }
 #pragma mark - Protocol
 #pragma mark - Overridden

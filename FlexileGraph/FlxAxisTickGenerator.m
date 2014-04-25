@@ -8,80 +8,7 @@
 
 #import "FlxAxisTickGenerator.h"
 #import "FlxGraphSpace.h"
-
-#define AllMajorCalendarUnits (NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitWeekOfYear | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond)
-
-@implementation NSDateComponents (flxUnitValue)
-- (void) alignTo:(NSCalendarUnit)unit{
-    NSArray *majorCalendarUnits = @[@(NSCalendarUnitYear), @(NSCalendarUnitMonth), @(NSCalendarUnitWeekOfYear), @(NSCalendarUnitDay), @(NSCalendarUnitHour), @(NSCalendarUnitMinute), @(NSCalendarUnitSecond)];
-    NSCalendarUnit leastUnit = unit;
-    for (NSNumber *num in majorCalendarUnits){
-        NSCalendarUnit cUnit = num.unsignedIntegerValue;
-        if (cUnit & unit){
-            leastUnit = cUnit;
-        }
-    }
-    NSUInteger index = [majorCalendarUnits indexOfObject:@(leastUnit)];
-    if (index != NSNotFound){
-        for (NSUInteger i = index + 1; i < majorCalendarUnits.count; i++){
-            NSCalendarUnit cUnit = [majorCalendarUnits[i] unsignedIntegerValue];
-            switch (cUnit) {
-                case NSCalendarUnitYear:
-                    self.year = 0;
-                    break;
-                case NSCalendarUnitMonth:
-                    self.month = 1;
-                    break;
-                case NSCalendarUnitWeekOfYear:
-                    self.weekOfYear = 0;
-                    self.yearForWeekOfYear = self.year;
-                    break;
-                case NSCalendarUnitDay:
-                    self.day = 1;
-                    break;
-                case NSCalendarUnitHour:
-                case NSCalendarUnitMinute:
-                case NSCalendarUnitSecond:
-                    [self setValue:0 forUnit:cUnit];
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-}
-- (void) setValue:(NSUInteger)value forUnit:(NSCalendarUnit)unit{
-    if (unit & NSCalendarUnitEra) self.era = value;
-    if (unit & NSYearCalendarUnit) self.year = value;
-    if (unit & NSQuarterCalendarUnit) self.quarter = value;
-    if (unit & NSWeekOfYearCalendarUnit) self.yearForWeekOfYear = value;
-    if (unit & NSMonthCalendarUnit) self.month = value;
-    if (unit & NSWeekOfMonthCalendarUnit) self.weekOfMonth = value;
-    if (unit & NSWeekCalendarUnit) self.week = value;
-    if (unit & NSWeekdayCalendarUnit) self.weekday = value;
-    if (unit & NSWeekdayOrdinalCalendarUnit) self.weekdayOrdinal = value;
-    if (unit & NSDayCalendarUnit) self.day = value;
-    if (unit & NSHourCalendarUnit) self.hour = value;
-    if (unit & NSMinuteCalendarUnit) self.minute = value;
-    if (unit & NSSecondCalendarUnit) self.second = value;
-}
-- (NSInteger) valueForCalendarUnit:(NSCalendarUnit)unit{
-    if (unit & NSCalendarUnitEra) return self.era;
-    if (unit & NSYearCalendarUnit) return self.year;
-    if (unit & NSQuarterCalendarUnit) return self.quarter;
-    if (unit & NSWeekOfYearCalendarUnit) return self.yearForWeekOfYear;
-    if (unit & NSMonthCalendarUnit) return self.month;
-    if (unit & NSWeekOfMonthCalendarUnit) return self.weekOfMonth;
-    if (unit & NSWeekCalendarUnit) return self.week;
-    if (unit & NSWeekdayCalendarUnit) return self.weekday;
-    if (unit & NSWeekdayOrdinalCalendarUnit) return self.weekdayOrdinal;
-    if (unit & NSDayCalendarUnit) return self.day;
-    if (unit & NSHourCalendarUnit) return self.hour;
-    if (unit & NSMinuteCalendarUnit) return self.minute;
-    if (unit & NSSecondCalendarUnit) return self.second;
-    return 0;
-}
-@end
+#import "NSDateComponents+flxGraphDateComponentsExt.h"
 
 #define MajorTickIntervalDivisor 9
 
@@ -129,65 +56,29 @@
     
     return nice * pow(10, exp);
 }
-- (BOOL) _getMajorUnit:(NSCalendarUnit *)major minor:(NSCalendarUnit *)minor fromDate:(NSDate *)startDate toDate:(NSDate *)endDate{
-        NSCalendarUnit compFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSWeekCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
-        NSDateComponents *components = [[NSCalendar currentCalendar] components:compFlags fromDate:startDate toDate:endDate options:0];
-    
-        if (components.year > 10){
-            return NO;
-        } else if (components.year > 5){
-            *major = NSCalendarUnitYear;
-            *minor = NSCalendarUnitMonth;
-            return YES;
-        } else if (components.month > 6){
-            *major = NSCalendarUnitMonth;
-            *minor = NSCalendarUnitWeekOfYear;
-            return YES;
-        } else if (components.month > 2){
-            *major = NSCalendarUnitMonth;
-            *minor = NSCalendarUnitDay;
-            return YES;
-        } else if (components.week > 2){
-            *major = NSCalendarUnitWeekOfYear;
-            *minor = NSCalendarUnitDay;
-            return YES;
-        } else if (components.day > 5){
-            *major = NSCalendarUnitDay;
-            *minor = NSCalendarUnitHour;
-            return YES;
-        } else if (components.hour > 24){
-            *major = NSCalendarUnitHour;
-            *minor = NSCalendarUnitMinute;
-            return YES;
-        } else if (components.minute > 30){
-            *major = NSCalendarUnitMinute;
-            *minor = NSCalendarUnitSecond;
-            return YES;
-        } else {
-            return NO;
-        }
-}
 #pragma mark - Interface
 #pragma mark - Protocol
 - (BOOL) axis:(FlxAxis *)axis needsMajorUpdateInRange:(FlxGraphRange *)range{
     
+    return YES;
+    
     BOOL (^StandardCalc)() = ^ BOOL {
-        double majorTickInt = [self _niceNum:range.boundSpan / MajorTickIntervalDivisor round:YES];
+        double majorTickInt = [self _niceNum:range.tickSpan / MajorTickIntervalDivisor round:YES];
         if (majorTickInt == _majorInterval){
-            double start = ceil(range.lowerBounds / majorTickInt) * majorTickInt;
-            double end = floor(range.upperBounds / majorTickInt) * majorTickInt;
+            double start = ceil(range.tickMin / majorTickInt) * majorTickInt;
+            double end = floor(range.tickMax / majorTickInt) * majorTickInt;
             
             return (start >= _majorStart && end <= _majorEnd);
         } else {
-            return NO;
+            return YES;
         }
     };
     
     if (axis.isDateAxis){
-        NSDate *startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.lowerBounds];
-        NSDate *endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.upperBounds];
+        NSDate *startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.tickMin];
+        NSDate *endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.tickMax];
         NSCalendarUnit major, minor;
-        if ([self _getMajorUnit:&major minor:&minor fromDate:startDate toDate:endDate]){
+        if ([NSDateComponents getNiceMajorUnit:&major minor:&minor fromDate:startDate toDate:endDate]){
             
             NSCalendar *calendar = [NSCalendar currentCalendar];
             NSDateComponents *majorInterval = [NSDateComponents new];
@@ -213,26 +104,28 @@
 }
 - (BOOL) axis:(FlxAxis *)axis needsMinorUpdateInRange:(FlxGraphRange *)range{
     
+    return YES;
+    
     BOOL (^StandardCalc)() = ^ BOOL {
-            double majorTickInt = [self _niceNum:range.boundSpan / MajorTickIntervalDivisor round:YES];
+            double majorTickInt = [self _niceNum:range.tickSpan / MajorTickIntervalDivisor round:YES];
             double minorTickInt = majorTickInt / 10;
         
         if (minorTickInt == _minorInterval){
             
-            double minorStart = ceil(range.lowerBounds / minorTickInt) * minorTickInt;
-            double minorEnd = floor(range.upperBounds / minorTickInt) * minorTickInt;
+            double minorStart = ceil(range.tickMin / minorTickInt) * minorTickInt;
+            double minorEnd = floor(range.tickMax / minorTickInt) * minorTickInt;
             
             return (minorStart >= _minorStart && minorEnd <= _minorEnd);
         } else {
-            return NO;
+            return YES;
         }
     };
     
     if (axis.isDateAxis){
-        NSDate *startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.lowerBounds];
-        NSDate *endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.upperBounds];
+        NSDate *startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.tickMin];
+        NSDate *endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.tickMax];
         NSCalendarUnit major, minor;
-        if ([self _getMajorUnit:&major minor:&minor fromDate:startDate toDate:endDate]){
+        if ([NSDateComponents getNiceMajorUnit:&major minor:&minor fromDate:startDate toDate:endDate]){
             
             NSCalendar *calendar = [NSCalendar currentCalendar];
             NSDateComponents *majorInterval = [NSDateComponents new];
@@ -247,7 +140,7 @@
             [components alignTo:minor];
             NSDate *endTick = [calendar dateFromComponents:components];
             
-            return (_minorStart == startTick.timeIntervalSinceReferenceDate && _minorEnd == endTick.timeIntervalSinceReferenceDate);
+            return (_minorStart >= startTick.timeIntervalSinceReferenceDate && _minorEnd <= endTick.timeIntervalSinceReferenceDate);
             
         } else {
             return StandardCalc();
@@ -259,56 +152,76 @@
 - (double *) majorTicksInRange:(FlxGraphRange *)range tickCount:(NSUInteger *)tickCount forAxis:(FlxAxis *)axis{
     
     double * (^StandardIntervalCalculation)() = ^ double *{
-        double majorTickInt = [self _niceNum:range.boundSpan / MajorTickIntervalDivisor round:YES];
-        double start = ({
-            double start = ceil(range.lowerBounds / majorTickInt) * majorTickInt;
-            start -= (start * majorTickInt * 3);
-            if (start < range.rangeMin){
-                start = (range.rangeMin / majorTickInt) * majorTickInt;
+        if (range.tickMin < 0 && range.tickMax > 0){
+            double majorTickInt = [self _niceNum:range.boundSpan / MajorTickIntervalDivisor round:YES];
+            
+            NSUInteger lowerCount = fabsf(range.tickMin) / majorTickInt;
+            NSUInteger upperCount = (range.tickMax / majorTickInt);
+            NSUInteger count = lowerCount + upperCount + 1;
+            
+            double cValue = lowerCount * majorTickInt * -1;
+            _majorStart = cValue;
+            double *values = malloc(sizeof(double) * count);
+            
+            for (int i = 0; i < count; i++){
+                values[i] = cValue;
+                cValue += majorTickInt;
             }
-            start;
-        });
-        double end = ({
-            double end = floor(range.upperBounds / majorTickInt) * majorTickInt;
-            end += (end * majorTickInt * 3);
-            if ( end > range.rangeMax){
-                end = (range.rangeMax / majorTickInt) * majorTickInt;
+            
+            _majorEnd = cValue - majorTickInt;
+            _majorInterval = majorTickInt;
+            
+            *tickCount = count;
+            return values;
+            
+        } else {
+            
+            double majorTickInt = [self _niceNum:range.boundSpan / MajorTickIntervalDivisor round:YES];
+            
+            double majorStart = ({
+                double start = ceil(range.tickMin / majorTickInt) * majorTickInt;
+                start;
+            });
+            
+            double majorEnd = ({
+                double end = ceil(range.tickMax / majorTickInt) * majorTickInt;
+                end;
+            });
+            
+            NSInteger count = (majorEnd - majorStart) / majorTickInt;
+            if (count < 0) count = 0;
+            
+            double *majorTicks = malloc(sizeof(double) * count);
+            for (int i = 0; i < count; i++){
+                majorTicks[i] = majorStart;
+                majorStart += majorTickInt;
             }
-            end;
-        });
-        
-        NSInteger count = (end - start) / majorTickInt;
-        if (count < 0) count = 0;
-        double *majorTicks = malloc(sizeof(double) * count);
-        for (int i = 0; i < count; i++){
-            majorTicks[i] = start;
-            start += majorTickInt;
+            
+            _majorStart = majorStart;
+            _majorEnd = majorEnd;
+            _majorInterval = majorTickInt;
+            
+            *tickCount = count;
+            return majorTicks;
         }
-        
-        _majorStart = start;
-        _majorEnd = end;
-        _majorInterval = majorTickInt;
-        
-        *tickCount = count;
-        return majorTicks;
     };
     
     if (axis.isDateAxis){
         NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSDate *startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.lowerBounds];
-        NSDate *endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.upperBounds];
-        NSCalendarUnit compFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSWeekCalendarUnit | NSDayCalendarUnit | NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
-        NSDateComponents *components = [calendar components:compFlags fromDate:startDate toDate:endDate options:0];
+        NSDate *startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.tickMin];
+        NSDate *endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.tickMax];
         
         NSCalendarUnit major, minor;
-        if ([self _getMajorUnit:&major minor:&minor fromDate:startDate toDate:endDate]){
-            NSUInteger count = [components valueForCalendarUnit:major];
+        if ([NSDateComponents getNiceMajorUnit:&major minor:&minor fromDate:startDate toDate:endDate]){
             NSDateComponents *majorInterval = [NSDateComponents new];
             [majorInterval setValue:1 forUnit:major];
             NSDateComponents *startComponents = [calendar components:AllMajorCalendarUnits fromDate:startDate];
             
             [startComponents alignTo:major];
             NSDate *majorTick = [calendar dateFromComponents:startComponents];
+            NSDateComponents *components = [calendar components:major fromDate:majorTick toDate:endDate options:0];
+            NSUInteger count = [components valueForCalendarUnit:major];
+            
             if ([majorTick compare:startDate] == NSOrderedAscending) majorTick = [calendar dateByAddingComponents:majorInterval toDate:majorTick options:0];
             
             _majorStart = majorTick.timeIntervalSinceReferenceDate;
@@ -323,6 +236,7 @@
             _majorEnd = majorTick.timeIntervalSinceReferenceDate;
             _majorInterval = [calendar dateFromComponents:majorInterval].timeIntervalSinceReferenceDate;
             
+            NSLog(@"Major Ticks: %lu", (unsigned long)count);
             *tickCount = count;
             return ticks;
         } else {
@@ -336,97 +250,100 @@
 - (double *) minorTicksInRange:(FlxGraphRange *)range tickCount:(NSUInteger *)tickCount forAxis:(FlxAxis *)axis{
     
     double * (^StandardIntervalCalculation)() = ^ double * {
-        double majorTickInt = [self _niceNum:range.boundSpan / MajorTickIntervalDivisor round:YES];
-        double majorStart = ({
-            double start = ceil(range.lowerBounds / majorTickInt) * majorTickInt;
-            start -= (start * majorTickInt * 3);
-            if (start < range.rangeMin){
-                start = (range.rangeMin / majorTickInt) * majorTickInt;
+        
+        if (range.tickMin < 0 && range.tickMax > 0){
+            
+            double majorTickInt = [self _niceNum:range.boundSpan / MajorTickIntervalDivisor round:YES];
+            double minorTickInt = majorTickInt / 10;
+            
+            NSUInteger lowerCount = fabsf(range.tickMin) / minorTickInt;
+            NSUInteger upperCount = (range.tickMax / minorTickInt);
+            NSUInteger count = lowerCount + upperCount + 1;
+            
+            double cValue = lowerCount * minorTickInt * -1;
+            _majorStart = cValue;
+            double *values = malloc(sizeof(double) * count);
+            
+            for (int i = 0; i < count; i++){
+                values[i] = cValue;
+                cValue += minorTickInt;
             }
-            start;
-        });
-        double majorEnd = ({
-            double end = floor(range.upperBounds / majorTickInt) * majorTickInt;
-            end += (end * majorTickInt * 3);
-            if ( end > range.rangeMax){
-                end = (range.rangeMax / majorTickInt) * majorTickInt;
-            }
-            end;
-        });
-        
-        NSInteger majorTickcount = (majorEnd - majorStart) / majorTickInt;
-        
-        double minorTickInt = majorTickInt / 10;
-        double minorTickCount = majorTickcount * MajorTickIntervalDivisor;
-        
-        double minorStart = ceil(range.lowerBounds / minorTickInt) * minorTickInt;
-        double minorEnd = floor(range.upperBounds / minorTickInt) * minorTickInt;
-        
-        _minorStart = minorStart;
-        _minorEnd = minorEnd;
-        _minorInterval = minorTickInt;
-        
-        minorTickCount += ((majorStart - minorStart) / minorTickInt);
-        minorTickCount += ((minorEnd - majorEnd) / minorTickInt);
-        
-        double *minorTicks = malloc(sizeof(double) * minorTickCount);
-        
-        NSUInteger mIdx = 0;
-        double minorTick = minorStart;
-        
-        while (minorTick < majorStart && mIdx < minorTickCount){
-            minorTicks[mIdx] = minorTick;
-            mIdx ++;
-            minorTick += minorTickInt;
-        }
-        
-        double majorTick = majorStart;
-        
-        for (int i = 0; i < majorTickInt; i++){
-            minorTick = majorTick + minorTickInt;
-            majorTick += majorTickInt;
-            while (minorTick < majorTick && minorTick <= minorEnd && mIdx < minorTickCount){
-                minorTicks[mIdx] = minorTick;
-                mIdx ++;
+            
+            _majorEnd = cValue - minorTickInt;
+            _majorInterval = minorTickInt;
+            
+            *tickCount = count;
+            return values;
+            
+        } else {
+            
+            double majorTickInt = [self _niceNum:range.boundSpan / MajorTickIntervalDivisor round:YES];
+            double minorTickInt = majorTickInt / 9;
+            
+            NSUInteger minorTickCount = range.tickSpan / minorTickInt;
+            
+            double minorStart = ceil(range.tickMin / minorTickInt) * minorTickInt;
+            
+            _minorStart = minorStart;
+            _minorInterval = minorTickInt;
+            
+            double *minorTicks = malloc(sizeof(double) * minorTickCount);
+            
+            double minorTick = minorStart;
+            
+            for (int i = 0; i < minorTickCount; i++){
+                minorTicks[i] = minorTick;
                 minorTick += minorTickInt;
             }
-            if (mIdx >= minorTickCount){
-                break;
-            }
+            
+            *tickCount = minorTickCount;
+            return minorTicks;
         }
-        
-        *tickCount = minorTickCount;
-        return minorTicks;
     };
     
     if (axis.isDateAxis){
         NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSDate *startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.lowerBounds];
-        NSDate *endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.upperBounds];
+        NSDate *startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.tickMin];
+        NSDate *endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:range.tickMax];
         
         NSCalendarUnit major, minor;
-        if ([self _getMajorUnit:&major minor:&minor fromDate:startDate toDate:endDate]){
+        if ([NSDateComponents getNiceMajorUnit:&major minor:&minor fromDate:startDate toDate:endDate]){
             NSDateComponents *majorInterval = [NSDateComponents new];
             [majorInterval setValue:1 forUnit:major];
             NSDateComponents *minorInterval = [NSDateComponents new];
-            [minorInterval setValue:1 forUnit:minor];
+            NSInteger minorInt = 1;
+            [minorInterval setValue:minorInt forUnit:minor];
             NSDateComponents *startComponents = [calendar components:AllMajorCalendarUnits fromDate:startDate];
             
             [startComponents alignTo:minor];
-            NSDate *minorStart = [calendar dateFromComponents:startComponents];
-            if ([minorStart compare:startDate] == NSOrderedAscending) minorStart = [calendar dateByAddingComponents:minorInterval toDate:minorStart options:0];
-            [startComponents alignTo:major];
-            NSDate *majorStart = [calendar dateFromComponents:startComponents];
-            if ([majorStart compare:startDate] == NSOrderedAscending) majorStart = [calendar dateByAddingComponents:majorInterval toDate:majorStart options:0];
+            NSDate *firstMinorInBounds = [calendar dateFromComponents:startComponents];
+            while ([firstMinorInBounds compare:startDate] == NSOrderedAscending){
+                firstMinorInBounds = [calendar dateByAddingComponents:minorInterval toDate:firstMinorInBounds options:0];
+            }
             
-            NSDate *cDate = minorStart;
-            _minorStart = minorStart.timeIntervalSinceReferenceDate;
-            NSDate *eDate = majorStart;
-            NSUInteger minorTickCount = 0;
+            [startComponents alignTo:major];
+            NSDate *firstMajor = [calendar dateFromComponents:startComponents];
+            while ([firstMajor compare:firstMinorInBounds] == NSOrderedAscending){
+                firstMajor = [calendar dateByAddingComponents:majorInterval toDate:firstMajor options:0];
+            }
+            
+            NSDate *cDate = firstMinorInBounds;
+            _minorStart = firstMinorInBounds.timeIntervalSinceReferenceDate;
+            NSDate *eDate = firstMajor;
+            NSUInteger minorTickCount = [[calendar components:minor fromDate:startDate toDate:endDate options:0] valueForCalendarUnit:minor];
+            while (minorTickCount > 100){
+                minorTickCount /= 2;
+                minorInt *= 2;
+            }
+            [minorInterval setValue:minorInt forUnit:minor];
+            
+            minorTickCount = 0;
             
             while ([cDate compare:endDate] == NSOrderedAscending){
                 NSDateComponents *components = [calendar components:minor fromDate:cDate toDate:eDate options:0];
-                minorTickCount += [components valueForCalendarUnit:minor] - 1;
+                NSInteger count = ([components valueForCalendarUnit:minor] / minorInt) - 1;
+                if (count < 0) count = 0;
+                minorTickCount += count;
                 cDate = eDate;
                 eDate = [calendar dateByAddingComponents:majorInterval toDate:cDate options:0];
                 if ([eDate compare:endDate] != NSOrderedAscending){
@@ -434,8 +351,8 @@
                 }
             }
             
-            cDate = minorStart;
-            eDate = majorStart;
+            cDate = firstMinorInBounds;
+            eDate = firstMajor;
             
             NSUInteger idx = 0;
             NSDate *minorTick;
@@ -444,12 +361,11 @@
             
             while ([cDate compare:endDate] == NSOrderedAscending){
                 NSDateComponents *components = [calendar components:minor fromDate:cDate toDate:eDate options:0];
-                NSUInteger count = [components valueForCalendarUnit:minor] - 1;
+                NSInteger count = ([components valueForCalendarUnit:minor] / minorInt) - 1;
                 minorTick = cDate;
-                for (int i = 0; i < count; i++){
+                for (NSInteger i = 0; i < count && idx < minorTickCount; i++, idx++){
                     minorTick = [calendar dateByAddingComponents:minorInterval toDate:minorTick options:0];
                     minorTicks[idx] = minorTick.timeIntervalSinceReferenceDate;
-                    idx ++;
                 }
                 cDate = eDate;
                 eDate = [calendar dateByAddingComponents:majorInterval toDate:cDate options:0];
@@ -458,8 +374,14 @@
                 }
             }
             
+            if (idx > minorTickCount){
+                NSLog(@"Count: %lu, i: %lu", (unsigned long)minorTickCount, (unsigned long)idx);
+            }
+            
             _minorEnd = minorTick.timeIntervalSinceReferenceDate;
             _minorInterval = [calendar dateFromComponents:minorInterval].timeIntervalSinceReferenceDate;
+            
+            NSLog(@"Minor Ticks: %lu \n    -----    ", (unsigned long)minorTickCount);
             
             *tickCount = minorTickCount;
             return minorTicks;

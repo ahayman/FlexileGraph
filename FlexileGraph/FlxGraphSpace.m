@@ -47,8 +47,37 @@
 - (double) boundSpan{
     return _upperBounds - _lowerBounds;
 }
+- (double) tickMin{
+    return MAX(_rangeMin, _lowerBounds);
+}
+- (double) tickMax{
+    return MIN(_rangeMax, _upperBounds);
+}
+- (double) tickSpan{
+    return self.tickMax - self.tickMin;
+}
+- (void) expandRangeByProportion:(double)prop{
+    double span = self.rangeSpan;
+    double newSpan = span * prop;
+    double diff = (newSpan - span) / 2;
+    self.rangeMin -= diff;
+    self.rangeMax += diff;
+}
+- (void) expandBoundsByProportion:(double)prop{
+    double span = self.boundSpan;
+    double newSpan = span * prop;
+    double diff = (newSpan - span) / 2;
+    self.lowerBounds -= diff;
+    self.upperBounds += diff;
+}
 @end
 
 @implementation FlxGraphSpace
-
+- (id) init{
+    if (self = [super init]){
+        _xRange = [FlxGraphRange new];
+        _yRange = [FlxGraphRange new];
+    }
+    return self;
+}
 @end

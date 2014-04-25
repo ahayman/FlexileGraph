@@ -9,12 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "FlxAxis.h"
 
-@interface NSDateComponents (flxUnitValue)
-- (void) setValue:(NSUInteger)value forUnit:(NSCalendarUnit)unit;
-- (NSInteger) valueForCalendarUnit:(NSCalendarUnit)unit;
-- (void) alignTo:(NSCalendarUnit)unit;
-@end
-
 @interface FlxAxisTickGenerator : NSObject <FlxAxisTickDelegate>
 
 @end

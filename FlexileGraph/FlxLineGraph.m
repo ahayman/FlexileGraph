@@ -45,7 +45,7 @@
 - (CGPathRef) graphPath{
     FlxGraphRange *xRange = self.graphSpace.xRange;
     FlxGraphRange *yRange = self.graphSpace.yRange;
-    CGFloat scale = [[UIScreen mainScreen] scale];
+    CGFloat scale = 1; //[[UIScreen mainScreen] scale];
     CGMutablePathRef pathRef = NULL;
     if (xRange && yRange && _xDataSet & _yDataSet){
         NSUInteger lowerIdx = [self lowerBoundsOfData:_xData inRange:xRange];
@@ -63,23 +63,51 @@
         double yFactor = ySpan / ((yUpper - yLower) ?: 1);
         
         pathRef = CGPathCreateMutable();
-        double x, y;
+        double x = 0, y = 0;
+        CGFloat resolution = 1.0f / [UIScreen mainScreen].scale;
+        CGFloat resStart = 0, resEnd = 0 + resolution;
         
         BOOL fill = (self.fillColor) ? YES : NO;
+        NSUInteger idx = lowerIdx;
         
         if (fill){
             //Initiall point for fill shape
+            x = (_xData[idx] - xLower) * xFactor;
             y = (yUpper - self.graphSpace.xBase) * yFactor;
-            x = (_xData[lowerIdx] - xLower) * xFactor;
+        } else {
+            x = (_xData[idx] - xLower) * xFactor;
+            y = (yUpper - _yData[idx]) * yFactor;
+            idx++;
         }
         
         CGPathMoveToPoint(pathRef, NULL, x, y);
         
-        for (NSUInteger i = lowerIdx; i <= upperIdx; i++){
-            x = (_xData[i] - xLower) * xFactor;
-            y = (yUpper - _yData[i]) * yFactor;
-            y = (y < 0) ? 0 : (y > ySpan) ? ySpan : y;
-            CGPathAddLineToPoint(pathRef, NULL, x, y);
+        resStart = floor(x / resolution) * resolution;
+        resEnd = resStart + resolution;
+        
+        double cY = (yUpper - _yData[idx]) * yFactor;
+        x = (_xData[idx] - xLower) * xFactor;
+        BOOL findMin = NO;
+        
+        if (upperIdx - lowerIdx > self.bounds.size.width / resolution){
+            while (idx <= upperIdx){
+                findMin = (cY > y) ? NO : YES;
+                while (x < resEnd && idx <= upperIdx){
+                    cY = (yUpper - _yData[idx]) * yFactor;
+                    y = findMin ? fmin(cY, y) : fmax(cY, y);
+                    idx++;
+                    x = (_xData[idx] - xLower) * xFactor;
+                }
+                CGPathAddLineToPoint(pathRef, NULL, resStart, y);
+                
+                resStart = floor(x / resolution) * resolution;
+                resEnd = resStart + resolution;
+                cY = (yUpper - _yData[idx]) * yFactor;
+            }
+        } else {
+            for (; idx <= upperIdx; idx++){
+                CGPathAddLineToPoint(pathRef, NULL, (_xData[idx] - xLower) * xFactor, (yUpper - _yData[idx]) * yFactor);
+            }
         }
         
         if (fill){
@@ -100,19 +128,19 @@
     NSUInteger upper = _recordCount ? _recordCount - 1 : 0;
     NSUInteger center = 0;
     while (YES) {
-        if (lower == upper) {
+        center = lower + ((upper - lower) / 2);
+        if (lower == upper || lower == center) {
             if (data[lower] > lowerBounds && lower > 0){
                 lower --;
             }
             return lower;
         }
         
-        center = lower + ((upper - lower) / 2);
         centerData = data[center];
         
         if (centerData == lowerBounds) return center;
-        else if (centerData < lowerBounds) upper = center;
-        else if (centerData > lowerBounds) lower = center;
+        else if (centerData > lowerBounds) upper = center;
+        else if (centerData < lowerBounds) lower = center;
     }
 }
 - (NSUInteger) upperBoundsOfData:(double *)data inRange:(FlxGraphRange *)range{
@@ -122,19 +150,19 @@
     NSUInteger upper = _recordCount ? _recordCount - 1 : 0;
     NSUInteger center = 0;
     while (YES) {
-        if (lower == upper) {
-            if (data[lower] < upperBounds && upper < _recordCount - 1){
+        center = lower + ((upper - lower) / 2);
+        if (lower == upper || lower == center) {
+            if (data[lower] < upperBounds && lower < _recordCount - 1){
                 lower ++;
             }
             return lower;
         }
         
-        center = lower + ((upper - lower) / 2);
         centerData = data[center];
         
         if (centerData == upperBounds) return center;
-        else if (centerData < upperBounds) upper = center;
-        else if (centerData > upperBounds) lower = center;
+        else if (centerData > upperBounds) upper = center;
+        else if (centerData < upperBounds) lower = center;
     }
 }
 #pragma mark - Interface
@@ -150,7 +178,7 @@
         _yData = malloc(sizeof(double) * _recordCount);
         _yDataSet = YES;
         
-        NSUInteger limit = 1000;
+        NSUInteger limit = 5000;
         NSUInteger offset = 0;
         while (offset < _recordCount){
             if (offset + limit > _recordCount){
@@ -159,25 +187,24 @@
             
             NSRange range = NSMakeRange(offset, limit);
             @autoreleasepool {
-                double *doubles = [_dataSource xDoublesForGraph:self inRange:range];
+                BOOL freeDoubles = NO;
+                double *doubles = [_dataSource xDoublesForLineGraph:self inRange:range freeAfterUse:&freeDoubles];
                 if (doubles){
                     memcpy(&_xData[offset], doubles, sizeof(double) * limit);
-                    free(doubles);
+                    if (freeDoubles) free(doubles);
                 }
                 
+                freeDoubles = NO;
                 if (doubles){
-                    doubles = [_dataSource yDoublesForGraph:self inRange:range];
+                    doubles = [_dataSource yDoublesForLineGraph:self inRange:range freeAfterUse:&freeDoubles];
                     memcpy(&_yData[offset], doubles, sizeof(double) * limit);
-                    free(doubles);
+                    if (freeDoubles) free(doubles);
                 }
             }
             offset += range.length;
         }
     }
     [self setGraphNeedsLayout];
-}
-- (void) layoutGraph{
-    
 }
 - (void) dealloc{
     [self clearData];

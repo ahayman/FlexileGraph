@@ -18,6 +18,7 @@
 //Covenience Properties
 @property (strong) UIColor *lineColor;
 @property (strong) UIColor *graphColor;
+@property (readonly) CGPathRef graphPath;
 
 - (void) setDataNeedsUpdate;
 - (void) updateData;

@@ -15,6 +15,11 @@
 @property double upperBounds;
 @property double lowerBounds;
 @property (readonly) double boundSpan;
+@property (readonly) double tickMin;
+@property (readonly) double tickMax;
+@property (readonly) double tickSpan;
+- (void) expandRangeByProportion:(double)prop;
+- (void) expandBoundsByProportion:(double)prop;
 @end
 
 @interface FlxGraphSpace : NSObject

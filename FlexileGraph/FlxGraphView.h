@@ -13,8 +13,12 @@
 @class FlxAxis;
 
 @interface FlxGraphView : UIView
-@property (strong) FlxGraphSpace *graphSpace;
+@property (strong, nonatomic) FlxGraphSpace *graphSpace;
 @property (readonly) NSArray *graphs;
+@property (nonatomic) BOOL enableDragging; ///Default: NO
+@property (nonatomic) BOOL enablePinching; ///Default: NO
+
+- (void) updateLayout;
 
 - (void) addGraphToView:(FlxGraph *)graph;
 - (void) removeGraph:(FlxGraph *)graph;

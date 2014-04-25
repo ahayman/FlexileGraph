@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-    s.name = 'FlexileDatabase'
+    s.name = 'FlexileGraph'
     s.version = '0.0.1'
     s.homepage = 'https://github.com/ahayman/FlexileGraph'
     s.summary = 'A Simple and fast graphing framework'

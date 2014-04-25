@@ -22,6 +22,11 @@ typedef NS_ENUM(NSUInteger, FlxAxisAnchor) {
     FlxAxisAnchorSide
 };
 
+@protocol FlxAxisLabelFormatterDelegate <NSObject>
+- (NSFormatter *) majorLabelFormatterForRange:(FlxGraphRange *)range forAxis:(FlxAxis *)axis;
+- (NSFormatter *) minorLabelFormatterForRange:(FlxGraphRange *)range forAxis:(FlxAxis *)axis;
+@end
+
 @protocol FlxAxisTickDelegate <NSObject>
 - (BOOL) axis:(FlxAxis *)axis needsMajorUpdateInRange:(FlxGraphRange *)range;
 - (BOOL) axis:(FlxAxis *)axis needsMinorUpdateInRange:(FlxGraphRange *)range;
@@ -30,24 +35,34 @@ typedef NS_ENUM(NSUInteger, FlxAxisAnchor) {
 @end
 
 @interface FlxAxis : CAShapeLayer
-@property (strong) NSString *axisID;
-@property FlxAxisSpace axisSpace;
-@property (readonly) FlxGraphRange *axisRange;
-@property (strong) FlxGraphSpace *graphSpace;
-@property CGFloat axisWidth;
-@property (strong) UIColor *lineColor;
-@property BOOL isDateAxis; ///Used only if the axis is calculating it's own ticks
+@property (strong, nonatomic) NSString *axisID;
+@property (nonatomic) FlxAxisSpace axisSpace;
+@property (readonly, nonatomic) FlxGraphRange *axisRange;
+@property (strong, nonatomic) FlxGraphSpace *graphSpace;
+@property (nonatomic) CGFloat axisWidth;
+@property (strong, nonatomic) UIColor *lineColor;
+@property (strong, nonatomic) CATextLayer *axisLabel;
+@property (nonatomic) BOOL isDateAxis; ///Used only if the axis is calculating it's own ticks
+@property (readonly) NSUInteger majorTickCount; ///The number of major ticks
+@property (readonly) NSUInteger minorTickCount; ///The number of minorTicks
+
+//Labelling
+@property (weak, nonatomic) id <FlxAxisLabelFormatterDelegate> labelFormatterDelegate;
+@property (strong, nonatomic) UIColor *majorFontColor;
+@property (strong, nonatomic) UIFont *majorLabelFont;
+@property (strong, nonatomic) UIColor *minorFontColor;
+@property (strong, nonatomic) UIFont *minorLabelFont;
 
 //Anchoring
-@property FlxAxisAnchor anchorType; ///anchor to either a side or the graph space
-@property double graphSpaceAnchor; ///anchors the axis to a spcific location in the graph space
-@property UIRectEdge sideAnchor; ///anchors the axis to a side
-@property CGFloat anchorOffset; ///offset for the axis if side anchored
+@property (nonatomic) FlxAxisAnchor anchorType; ///anchor to either a side or the graph space
+@property (nonatomic) double graphSpaceAnchor; ///anchors the axis to a spcific location in the graph space
+@property (nonatomic) UIRectEdge sideAnchor; ///anchors the axis to a side
+@property (nonatomic) CGFloat anchorOffset; ///offset for the axis if side anchored
 
 //Tick Generation
-@property (weak) id <FlxAxisTickDelegate> tickDelegate;
-@property CGSize majorTickSize; ///Major Tick size. If 0 no ticks will be presented. Default: 4
-@property CGSize minorTickSize; ///Minor Tick Size: If 0 no ticks will be presented. Default: 2
+@property (weak, nonatomic) id <FlxAxisTickDelegate> tickDelegate;
+@property (nonatomic) CGSize majorTickSize; ///Major Tick size. If 0 no ticks will be presented. Default: 4
+@property (nonatomic) CGSize minorTickSize; ///Minor Tick Size: If 0 no ticks will be presented. Default: 2
 
 - (void) setAxisNeedsLayout;
 - (void) layoutAxis;
