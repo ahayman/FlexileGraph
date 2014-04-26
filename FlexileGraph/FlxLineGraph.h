@@ -11,8 +11,8 @@
 
 @protocol FlxLineGraphDataSource <NSObject>
 - (NSUInteger) recordCountForGraph:(FlxLineGraph *)graph;
-- (double *) xDoublesForLineGraph:(FlxLineGraph *)graph inRange:(NSRange)range freeAfterUse:(BOOL *)free;
-- (double *) yDoublesForLineGraph:(FlxLineGraph *)graph inRange:(NSRange)range freeAfterUse:(BOOL *)free;
+- (double *) xDoublesForLineGraph:(FlxLineGraph *)graph inRange:(NSRange)range freeDoubles:(BOOL *)free;
+- (double *) yDoublesForLineGraph:(FlxLineGraph *)graph inRange:(NSRange)range freeDoubles:(BOOL *)free;
 @end
 
 @interface FlxLineGraph : FlxGraph

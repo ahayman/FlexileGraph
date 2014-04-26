@@ -10,6 +10,7 @@
 		932F734318F749DC00BFCB73 /* NSDateComponents+flxGraphDateComponentsExt.m in Sources */ = {isa = PBXBuildFile; fileRef = 932F734218F749DC00BFCB73 /* NSDateComponents+flxGraphDateComponentsExt.m */; };
 		932F734618F74AE300BFCB73 /* FlxStandardFormatterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 932F734518F74AE300BFCB73 /* FlxStandardFormatterDelegate.m */; };
 		937F656718F1994800A6C5F1 /* FlxAxisTickGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 937F656618F1994800A6C5F1 /* FlxAxisTickGenerator.m */; };
+		93D29C97190C15C1007B6BB0 /* FlxRangeGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 93D29C96190C15C1007B6BB0 /* FlxRangeGraph.m */; };
 		93F8DECE18E4A48800FD5F5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93F8DECD18E4A48800FD5F5E /* Foundation.framework */; };
 		93F8DED318E4A48800FD5F5E /* FlxGraph.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 93F8DED218E4A48800FD5F5E /* FlxGraph.h */; };
 		93F8DED518E4A48800FD5F5E /* FlxGraph.m in Sources */ = {isa = PBXBuildFile; fileRef = 93F8DED418E4A48800FD5F5E /* FlxGraph.m */; };
@@ -55,6 +56,8 @@
 		932F734518F74AE300BFCB73 /* FlxStandardFormatterDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlxStandardFormatterDelegate.m; sourceTree = "<group>"; };
 		937F656518F1994800A6C5F1 /* FlxAxisTickGenerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlxAxisTickGenerator.h; sourceTree = "<group>"; };
 		937F656618F1994800A6C5F1 /* FlxAxisTickGenerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlxAxisTickGenerator.m; sourceTree = "<group>"; };
+		93D29C95190C15C1007B6BB0 /* FlxRangeGraph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlxRangeGraph.h; sourceTree = "<group>"; };
+		93D29C96190C15C1007B6BB0 /* FlxRangeGraph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlxRangeGraph.m; sourceTree = "<group>"; };
 		93F8DECA18E4A48800FD5F5E /* libFlexileGraph.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libFlexileGraph.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		93F8DECD18E4A48800FD5F5E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		93F8DED118E4A48800FD5F5E /* FlexileGraph-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FlexileGraph-Prefix.pch"; sourceTree = "<group>"; };
@@ -143,6 +146,8 @@
 				932F734218F749DC00BFCB73 /* NSDateComponents+flxGraphDateComponentsExt.m */,
 				932F734418F74AE300BFCB73 /* FlxStandardFormatterDelegate.h */,
 				932F734518F74AE300BFCB73 /* FlxStandardFormatterDelegate.m */,
+				93D29C95190C15C1007B6BB0 /* FlxRangeGraph.h */,
+				93D29C96190C15C1007B6BB0 /* FlxRangeGraph.m */,
 				93F8DEFC18E5C20300FD5F5E /* FlxGraphView.h */,
 				93F8DEFD18E5C20300FD5F5E /* FlxGraphView.m */,
 				93F8DED218E4A48800FD5F5E /* FlxGraph.h */,
@@ -265,6 +270,7 @@
 				932F734618F74AE300BFCB73 /* FlxStandardFormatterDelegate.m in Sources */,
 				93F8DED518E4A48800FD5F5E /* FlxGraph.m in Sources */,
 				93F8DEF818E4C6A500FD5F5E /* FlxGraphSpace.m in Sources */,
+				93D29C97190C15C1007B6BB0 /* FlxRangeGraph.m in Sources */,
 				937F656718F1994800A6C5F1 /* FlxAxisTickGenerator.m in Sources */,
 				93F8DEFB18E4C6C200FD5F5E /* FlxAxis.m in Sources */,
 			);
