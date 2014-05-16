@@ -7,9 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class FlxGraphSpace;
-
+#import "FlxGraphDataSet.h"
 
 @interface FlxGraph : CAShapeLayer
 @property (strong) NSString *graphID;
@@ -18,10 +16,8 @@
 //Covenience Properties
 @property (strong) UIColor *lineColor;
 @property (strong) UIColor *graphColor;
-@property (readonly) CGPathRef graphPath;
 
-- (void) setDataNeedsUpdate;
-- (void) updateData;
 - (void) setGraphNeedsLayout;
 - (void) layoutGraph;
+- (CGPathRef) newGraphPath;
 @end

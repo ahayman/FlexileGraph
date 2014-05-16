@@ -10,7 +10,6 @@
 
 @implementation FlxGraph{
     FlxGraphSpace *_graphSpace;
-    BOOL _dataNeedsUpdate;
     BOOL _graphNeedsLayout;
 }
 #pragma mark - Class
@@ -23,12 +22,6 @@
 }
 #pragma mark - Lazy
 #pragma mark - Private
-- (void) performDataUpdate{
-    if (_dataNeedsUpdate){
-        _dataNeedsUpdate = NO;
-        [self updateData];
-    }
-}
 - (void) performGraphLayout{
     if (_graphNeedsLayout){
         _graphNeedsLayout = NO;
@@ -57,15 +50,6 @@
 - (UIColor *) graphColor{
     return (self.fillColor) ? [UIColor colorWithCGColor:self.fillColor] : nil;
 }
-- (void) setDataNeedsUpdate{
-    if (!_dataNeedsUpdate){
-        _dataNeedsUpdate = YES;
-        [self performSelector:@selector(performDataUpdate) withObject:nil afterDelay:0];
-    }
-}
-- (void) updateData{
-    _dataNeedsUpdate = NO;
-}
 - (void) setGraphNeedsLayout{
     if (!_graphNeedsLayout){
         _graphNeedsLayout = YES;
@@ -77,9 +61,19 @@
 //    [CATransaction begin];
 //    [CATransaction setValue:(id)kCFBooleanTrue
 //                     forKey:kCATransactionDisableActions];
-    self.path = self.graphPath;
+    
+    CGPathRef graphPath = [self newGraphPath];
+    
+    self.path = graphPath;
+    
+    if (graphPath){
+        CGPathRelease(graphPath);
+    }
 //    [CATransaction commit];
 }
 #pragma mark - Protocol
+- (CGPathRef) newGraphPath{
+    return nil;
+}
 #pragma mark - Overridden
 @end

@@ -7,14 +7,9 @@
 //
 
 #import "FlxGraph.h"
-@class FlxLineGraph;
-
-@protocol FlxLineGraphDataSource <NSObject>
-- (NSUInteger) recordCountForGraph:(FlxLineGraph *)graph;
-- (double *) xDoublesForLineGraph:(FlxLineGraph *)graph inRange:(NSRange)range freeDoubles:(BOOL *)free;
-- (double *) yDoublesForLineGraph:(FlxLineGraph *)graph inRange:(NSRange)range freeDoubles:(BOOL *)free;
-@end
+@class FlxGraphDataSet;
 
 @interface FlxLineGraph : FlxGraph
-@property (weak) id <FlxLineGraphDataSource> dataSource;
+@property (strong) FlxGraphDataSet *xData;
+@property (strong) FlxGraphDataSet *yData;
 @end

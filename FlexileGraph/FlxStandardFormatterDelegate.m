@@ -58,9 +58,7 @@
     
     CGFloat majorWidth = ({
         CGFloat majorWidth = axis.graphSpace == FlxAxisSpaceX ? axis.bounds.size.width : axis.bounds.size.height;
-        if (range.lowerBounds > range.rangeMin || range.upperBounds < range.rangeMax){
-            majorWidth *= range.tickSpan / range.rangeSpan;
-        }
+        majorWidth *= range.tickSpan / range.boundSpan;
         majorWidth /= axis.majorTickCount;
         majorWidth;
     });
@@ -116,9 +114,7 @@
     
     CGFloat minorWidth = ({
         CGFloat minorWidth = axis.graphSpace == FlxAxisSpaceX ? axis.bounds.size.width : axis.bounds.size.height;
-        if (range.lowerBounds > range.rangeMin || range.upperBounds < range.rangeMax){
-            minorWidth *= range.tickSpan / range.rangeSpan;
-        }
+        minorWidth *= range.tickSpan / range.boundSpan;
         minorWidth /= axis.minorTickCount;
         minorWidth;
     });

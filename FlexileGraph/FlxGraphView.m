@@ -21,6 +21,7 @@
     UIPanGestureRecognizer *_drag;
     double _pinchMin;
     double _pinchMax;
+    double _lastPinchSpan;
     BOOL _pinchVertical;
     
     BOOL _dragVertical;
@@ -66,8 +67,10 @@
             diff = (_dragLastPoint.x - point.x) * _dragSpaceConv;
             range = self.graphSpace.xRange;
         }
-        range.lowerBounds += diff;
-        range.upperBounds += diff;
+        //Apply the
+        if (range.lowerBounds + diff < range.rangeMax - (range.boundSpan * .1) && range.upperBounds + diff > range.rangeMin + (range.boundSpan * .1)){
+            [range setBoundsToLower:range.lowerBounds + diff upper:range.upperBounds + diff];
+        }
         
         _dragLastPoint = point;
         
@@ -78,26 +81,31 @@
     }
 }
 - (void) pinch:(UIPinchGestureRecognizer *)pinch{
-    if (pinch.state == UIGestureRecognizerStateBegan){
-        CGPoint point1 = [pinch locationOfTouch:0 inView:self];
-        CGPoint point2 = [pinch locationOfTouch:1 inView:self];
-        CGSize pinchSize = CGSizeMake(fabsf(point1.x - point2.x), fabsf(point1.y - point2.y));
-        if (pinchSize.width < pinchSize.height){
-            _pinchVertical = YES;
+    void (^SetPinchBaseline)(CGPoint point1, CGPoint point2) = ^(CGPoint point1, CGPoint point2){
+        if (_pinchVertical){
             FlxGraphRange *range = _graphSpace.yRange;
             double pinchMin = MIN(point1.y, point2.y);
             double pinchMax = MAX(point1.y, point2.y);
             CGFloat height = self.bounds.size.height;
             _pinchMin = ((height - pinchMax) / height) * range.boundSpan + range.lowerBounds;
             _pinchMax = ((height - pinchMin) / height) * range.boundSpan + range.lowerBounds;
+            _lastPinchSpan = pinchMax - pinchMin;
         } else {
-            _pinchVertical = NO;
             FlxGraphRange *range = _graphSpace.xRange;
             double pinchMin = MIN(point1.x, point2.x);
             double pinchMax = MAX(point1.x, point2.x);
             _pinchMin = (pinchMin / self.bounds.size.width) * range.boundSpan + range.lowerBounds;
             _pinchMax = (pinchMax / self.bounds.size.width) * range.boundSpan + range.lowerBounds;
+            _lastPinchSpan = pinchMax - pinchMin;
         }
+    };
+    
+    if (pinch.state == UIGestureRecognizerStateBegan){
+        CGPoint point1 = [pinch locationOfTouch:0 inView:self];
+        CGPoint point2 = [pinch locationOfTouch:1 inView:self];
+        CGSize pinchSize = CGSizeMake(fabsf(point1.x - point2.x), fabsf(point1.y - point2.y));
+        _pinchVertical = (pinchSize.width < pinchSize.height) ? YES : NO;
+        SetPinchBaseline(point1, point2);
     } else if (pinch.numberOfTouches > 1){
         FlxGraphRange *range = (_pinchVertical) ? _graphSpace.yRange : _graphSpace.xRange;
         CGPoint point1 = [pinch locationOfTouch:0 inView:self];
@@ -106,30 +114,48 @@
         if (_pinchVertical) {
             pinchMin = MIN(point1.y, point2.y);
             pinchMax = MAX(point1.y, point2.y);
-            double height = self.bounds.size.height;
-            double conv = (_pinchMax - _pinchMin) / (pinchMax - pinchMin);
-            range.lowerBounds = _pinchMin - (height - pinchMax) * conv;
-            range.upperBounds = height * conv + range.lowerBounds;
+            if (fabs((pinchMax - pinchMin) - _lastPinchSpan) < 10){
+                double height = self.bounds.size.height;
+                double conv = (_pinchMax - _pinchMin) / (pinchMax - pinchMin);
+                double lower = _pinchMin - (height - pinchMax) * conv;
+                double upper = height * conv + lower;
+                double boundSpan = upper - lower;
+                if (lower > range.rangeMax - boundSpan * .1){
+                    lower = range.rangeMax - boundSpan * .1;
+                }
+                if (upper < range.rangeMin + boundSpan * .1){
+                    upper = range.rangeMin + boundSpan * .1;
+                }
+                [range setBoundsToLower:lower upper:upper];
+                _lastPinchSpan = pinchMax - pinchMin;
+            } else {
+                SetPinchBaseline(point1, point2);
+            }
         } else {
             pinchMin = MIN(point1.x, point2.x);
             pinchMax = MAX(point1.x, point2.x);
-            double conv = (_pinchMax - _pinchMin) / (pinchMax - pinchMin);
-            range.lowerBounds = _pinchMin - pinchMin * conv;
-            range.upperBounds = self.bounds.size.width * conv + range.lowerBounds;
+            if (fabs((pinchMax - pinchMin) - _lastPinchSpan) < 10){
+                double conv = (_pinchMax - _pinchMin) / (pinchMax - pinchMin);
+                double lower = _pinchMin - pinchMin * conv;
+                double upper = self.bounds.size.width * conv + lower;
+                double boundSpan = upper - lower;
+                if (lower > range.rangeMax - boundSpan * .1){
+                    lower = range.rangeMax - boundSpan * .1;
+                }
+                if (upper < range.rangeMin + boundSpan * .1){
+                    upper = range.rangeMin + boundSpan * .1;
+                }
+                [range setBoundsToLower:lower upper:upper];
+                _lastPinchSpan = pinchMax - pinchMin;
+            } else {
+                SetPinchBaseline(point1, point2);
+            }
         }
         
         [self updateLayout];
     }
 }
 #pragma mark - Interface
-- (void) updateGraph{
-    for (FlxGraph *graph in _graphs){
-        [graph setDataNeedsUpdate];
-    }
-    for (FlxAxis *axis in _axes){
-        [axis setAxisNeedsLayout];
-    }
-}
 - (void) updateLayout{
     for (FlxGraph *graph in _graphs){
         [graph layoutGraph];
@@ -185,7 +211,6 @@
         [_graphs addObject:graph];
         graph.graphSpace = self.graphSpace;
         graph.frame = self.bounds;
-        [graph setDataNeedsUpdate];
         if (_axes.count){
             [self.layer insertSublayer:graph below:_axes.firstObject];
         } else {
