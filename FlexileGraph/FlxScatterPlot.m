@@ -52,7 +52,7 @@
 - (CGPathRef) graphPath{
     FlxGraphRange *xRange = self.graphSpace.xRange;
     FlxGraphRange *yRange = self.graphSpace.yRange;
-    if (xRange && yRange && _xData.recordCount && _yData && _xData.recordCount >= _yData.recordCount){
+    if (xRange && yRange && _xData.dataProperties.count && _yData && _xData.dataProperties.count >= _yData.dataProperties.count){
         NSRange dataRange;
         double *xData = [_xData doublesLimitedToRange:xRange boundingRange:&dataRange];
         if (!dataRange.length) return nil;

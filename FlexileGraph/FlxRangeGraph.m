@@ -31,7 +31,7 @@
     FlxGraphRange *yRange = self.graphSpace.yRange;
     CGFloat scale = 1; //[[UIScreen mainScreen] scale];
     CGMutablePathRef pathRef = NULL;
-    if (xRange && yRange && _xData.recordCount && _yUpperData && _yLowerData && _yUpperData.recordCount <= _xData.recordCount && _yLowerData.recordCount <= _xData.recordCount){
+    if (xRange && yRange && _xData.dataProperties.count && _yUpperData && _yLowerData && _yUpperData.dataProperties.count <= _xData.dataProperties.count && _yLowerData.dataProperties.count <= _xData.dataProperties.count){
         NSRange dataRange;
         double *xData = [_xData doublesLimitedToRange:xRange boundingRange:&dataRange];
         if (!dataRange.length) return nil;

@@ -48,7 +48,7 @@
         } else if (fraction <= 2) {
             nice = 2;
         } else if (fraction <= 5) {
-            nice = 2;
+            nice = 5;
         } else {
             nice = 10;
         }
